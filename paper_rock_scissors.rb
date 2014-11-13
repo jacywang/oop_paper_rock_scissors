@@ -14,7 +14,7 @@ class Player
   def choice
     begin 
       puts "Choose one: (#{REFERENCE.keys.join("/")})"
-      player_choice = gets.chomp.upcase
+      self.player_choice = gets.chomp.upcase
     end until REFERENCE.keys.include?(player_choice)
     player_choice
   end 
