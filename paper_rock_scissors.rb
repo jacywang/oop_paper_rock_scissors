@@ -6,30 +6,27 @@ end
 class Player
 
   include Reference
+  attr_accessor :player_choice
 
   def initialize
-    @player_choice
   end
 
   def choice
     begin 
       puts "Choose one: (#{REFERENCE.keys.join("/")})"
-      @player_choice = gets.chomp.upcase
-    end until REFERENCE.keys.include?(@player_choice)
-    @player_choice
+      player_choice = gets.chomp.upcase
+    end until REFERENCE.keys.include?(player_choice)
+    player_choice
   end 
+  
 end
 
-class Computer
+class Human < Player; end
 
-  include Reference
-
-  def initialize
-    @computer_choice
-  end
+class Computer < Player
 
   def choice
-    @computer_choice = REFERENCE.keys.sample
+    REFERENCE.keys.sample
   end
 
 end
@@ -39,16 +36,16 @@ class PaperRockScissors
   include Reference
 
   def initialize
-    welcome
-    @player = Player.new
+    @player = Human.new
     @computer = Computer.new
   end
 
   def welcome
-    puts "Welcome to play Paper Rock Scissors!"
+    puts "-----Play Paper Rock Scissors!-----"
   end
 
   def run
+    welcome
     player_choice = @player.choice
     computer_choice = @computer.choice
     display_choice(player_choice, computer_choice)
