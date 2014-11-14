@@ -1,7 +1,4 @@
-require "pry"
-
 class Hand
-
   include Comparable
   attr_accessor :value
 
@@ -20,12 +17,10 @@ class Hand
       -1
     end
   end
-
 end
 
 
 class Player
-
   attr_accessor :hand
   attr_reader :name
 
@@ -34,12 +29,10 @@ class Player
   end
 
   def make_choice  
-  end 
-  
+  end   
 end
 
 class Human < Player
-
   def make_choice
     begin 
       puts "Choose one: (#{Game::OPTIONS.keys.join("/")})"
@@ -47,19 +40,15 @@ class Human < Player
     end until Game::OPTIONS.keys.include?(c)
     self.hand = Hand.new(c)
   end
-
 end
 
 class Computer < Player
-
   def make_choice
     self.hand = Hand.new(Game::OPTIONS.keys.sample)
   end
-
 end
 
 class Game
-
   OPTIONS = { "P" => "Paper", "R" => "Rock", "S" => "Scissor" }
 
   def initialize
@@ -103,7 +92,6 @@ class Game
     self.run if user_chocie == "Y"
     exit if user_chocie == "N"
   end
-
 end
 
 Game.new.run
