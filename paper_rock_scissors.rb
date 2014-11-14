@@ -1,43 +1,70 @@
+require "pry"
 
-module Reference
-  REFERENCE = { "P" => "Paper", "R" => "Rock", "S" => "Scissor" }
+class Hand
+
+  include Comparable
+  attr_accessor :value
+
+  def initialize(value)
+    @value = value
+  end
+
+  def <=>(another_hand)
+    if value == another_hand.value
+      0
+    elsif (value == "R" && another_hand.value == "S") || 
+          (value == "P" && another_hand.value == "R") ||
+          (value == "S" && another_hand.value == "P")
+      1
+    else
+      -1
+    end
+  end
+
 end
+
 
 class Player
 
-  include Reference
-  attr_accessor :player_choice
+  attr_accessor :hand
+  attr_reader :name
 
-  def initialize
+  def initialize(name)
+    @name = name
   end
 
-  def choice
-    begin 
-      puts "Choose one: (#{REFERENCE.keys.join("/")})"
-      self.player_choice = gets.chomp.upcase
-    end until REFERENCE.keys.include?(player_choice)
-    player_choice
+  def make_choice  
   end 
   
 end
 
-class Human < Player; end
+class Human < Player
 
-class Computer < Player
-
-  def choice
-    REFERENCE.keys.sample
+  def make_choice
+    begin 
+      puts "Choose one: (#{Game::OPTIONS.keys.join("/")})"
+      c = gets.chomp.upcase
+    end until Game::OPTIONS.keys.include?(c)
+    self.hand = Hand.new(c)
   end
 
 end
 
-class PaperRockScissors
+class Computer < Player
 
-  include Reference
+  def make_choice
+    self.hand = Hand.new(Game::OPTIONS.keys.sample)
+  end
+
+end
+
+class Game
+
+  OPTIONS = { "P" => "Paper", "R" => "Rock", "S" => "Scissor" }
 
   def initialize
-    @player = Human.new
-    @computer = Computer.new
+    @player = Human.new("Jacy")
+    @computer = Computer.new("Z3")
   end
 
   def welcome
@@ -46,27 +73,25 @@ class PaperRockScissors
 
   def run
     welcome
-    player_choice = @player.choice
-    computer_choice = @computer.choice
-    display_choice(player_choice, computer_choice)
-    check_winner(player_choice, computer_choice)
+    @player.make_choice
+    @computer.make_choice
+    display_choice
+    check_winner
     play_again
   end
 
-  def display_choice(player_choice, computer_choice)
-    puts "You chose #{REFERENCE[player_choice]}"
-    puts "Computer chose #{REFERENCE[computer_choice]}"
+  def display_choice
+    puts "#{@player.name} chose #{OPTIONS[@player.hand.value]}!"
+    puts "#{@computer.name} chose #{OPTIONS[@computer.hand.value]}!"
   end
 
-  def check_winner(player_choice, computer_choice)
-    if player_choice == computer_choice
+  def check_winner
+    if @player.hand == @computer.hand
       puts "It's a tie!"
-    elsif (player_choice == "R" && computer_choice == "S") || 
-          (player_choice == "P" && computer_choice == "R") ||
-          (player_choice == "S" && computer_choice == "P")
-      puts "You won!"
+    elsif @player.hand > @computer.hand
+      puts "#{@player.name} won!"
     else
-      puts "Computer won!"
+      puts "#{@computer.name} won!"
     end
   end
 
@@ -81,4 +106,4 @@ class PaperRockScissors
 
 end
 
-PaperRockScissors.new.run
+Game.new.run
